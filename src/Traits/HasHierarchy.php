@@ -67,10 +67,8 @@ trait HasHierarchy
     private function checkHierarchyRootNodes() : void
     {
         if($this->getParentId() === null) {
-            $existingRootCount = $this->whereNull($this->getParentIdKeyName())->count();
-
-            if($existingRootCount !== 0) {
-                HierarchyException::throwInvalidRootCountException($existingRootCount);
+            if($this->whereNull($this->getParentIdKeyName())->count() !== 0) {
+                HierarchyException::throwInvalidRootCountException();
             }
         }
     }

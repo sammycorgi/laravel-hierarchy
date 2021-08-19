@@ -25,11 +25,10 @@ class HierarchyException extends Exception
     /**
      * Throw an exception because the number of root nodes does not equal 1
      *
-     * @param int $count
      * @throws HierarchyException
      */
-    public static function throwInvalidRootCountException(int $count)
+    public static function throwInvalidRootCountException()
     {
-        throw new static("Invalid number of root nodes found. This should be exactly 1. $count found");
+        throw new static("Attempted to create new root node when one already exists!");
     }
 }

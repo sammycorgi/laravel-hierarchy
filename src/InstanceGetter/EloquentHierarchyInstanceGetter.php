@@ -2,7 +2,6 @@
 
 namespace Sammycorgi\LaravelHierarchy\InstanceGetter;
 
-use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Sammycorgi\LaravelHierarchy\Contracts\GetsHierarchyInstances;
@@ -10,10 +9,11 @@ use Sammycorgi\LaravelHierarchy\Contracts\HasHierarchy;
 
 class EloquentHierarchyInstanceGetter implements GetsHierarchyInstances
 {
-    private Model $class;
+    /**
+     * @var HasHierarchy|Model
+     */
+    private $class;
     private string $classname;
-    private string $parentIdProperty;
-    private string $idProperty;
 
     /**
      * EloquentHierarchyInstanceGetter constructor.
@@ -21,15 +21,7 @@ class EloquentHierarchyInstanceGetter implements GetsHierarchyInstances
     public function __construct(string $classname)
     {
         $this->classname = $classname;
-
-        $this->class = new $classname;
-
-        if(!is_subclass_of($this->class, HasHierarchy::class)) {
-            throw new Exception("$classname must implement interface " . HasHierarchy::class);
-        }
-
-        $this->parentIdProperty = $this->class->getParentIdKeyName();
-        $this->idProperty = $this->class->getIdKeyName();
+        $this->class = app()->make($classname);
     }
 
     /**
@@ -37,7 +29,7 @@ class EloquentHierarchyInstanceGetter implements GetsHierarchyInstances
      */
     public function count(): int
     {
-        return call_user_func([$this->classname, 'count']);
+        return $this->class->count();
     }
 
     /**
@@ -45,7 +37,7 @@ class EloquentHierarchyInstanceGetter implements GetsHierarchyInstances
      */
     public function getAll(): Collection
     {
-        return call_user_func([$this->classname, 'select'], [$this->idProperty, $this->parentIdProperty])->get();
+        return $this->class->select([$this->class->getIdKeyName(), $this->class->getParentIdKeyName()])->get();
     }
 
     /**
@@ -53,7 +45,7 @@ class EloquentHierarchyInstanceGetter implements GetsHierarchyInstances
      */
     public function hasChildren(int|string $id): bool
     {
-        return call_user_func([$this->classname, 'where'], $this->parentIdProperty, $id)->count() > 0;
+        return $this->class->where($this->class->getParentIdKeyName(), $id)->count() > 0;
     }
 
     /**
@@ -62,5 +54,21 @@ class EloquentHierarchyInstanceGetter implements GetsHierarchyInstances
     public function getTypeIdentifier(): string
     {
         return $this->class->getMorphClass();
+    }
+
+    /**
+     * @return Model|HasHierarchy
+     */
+    public function getClass(): mixed
+    {
+        return $this->class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClassname(): string
+    {
+        return $this->classname;
     }
 }

@@ -2,10 +2,12 @@
 
 use Sammycorgi\LaravelHierarchy\InstanceGetter\EloquentHierarchyInstanceGetter;
 use Sammycorgi\LaravelHierarchy\Persist\CachePersister;
+use Sammycorgi\LaravelHierarchy\Persist\EloquentPersister;
 
 return [
     'instance_getters' => [
-        'eloquent' => EloquentHierarchyInstanceGetter::class,
+        'default' => 'eloquent',
+        'eloquent' => EloquentHierarchyInstanceGetter::class
     ],
 
     'eloquent' => [
@@ -13,7 +15,8 @@ return [
     ],
 
     'persisters' => [
-        'default' => 'cache',
-        'cache' => CachePersister::class
+        'default' => env('HIERARCHY_DEFAULT_PERSISTER', 'cache'),
+        'cache' => CachePersister::class,
+        'eloquent' => EloquentPersister::class
     ]
 ];

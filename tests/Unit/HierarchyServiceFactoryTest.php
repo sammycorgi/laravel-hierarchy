@@ -10,6 +10,7 @@ use Sammycorgi\LaravelHierarchy\Contracts\PersistsHierarchyChildren;
 use Sammycorgi\LaravelHierarchy\InstanceGetter\EloquentHierarchyInstanceGetter;
 use Sammycorgi\LaravelHierarchy\Service\HierarchyService;
 use Sammycorgi\LaravelHierarchy\Service\HierarchyServiceFactory;
+use Tests\database\TestHasHierarchy;
 use Tests\TestCase;
 
 class HierarchyServiceFactoryTest extends TestCase
@@ -55,12 +56,10 @@ class HierarchyServiceFactoryTest extends TestCase
 
     public function test_the_factory_will_return_the_eloquent_getter_in_the_service_if_the_passed_driver_or_class_is_a_model()
     {
-        $driverOrClass = $this->mock(Model::class);
-
         $factory = app()->make(HierarchyServiceFactory::class);
         $this->setConfigForDefaultPersister();
 
-        $this->assertInstanceOf(EloquentHierarchyInstanceGetter::class, $factory->for(get_class($driverOrClass))->getHierarchyInstanceGetter());
+        $this->assertInstanceOf(EloquentHierarchyInstanceGetter::class, $factory->for(TestHasHierarchy::class)->getHierarchyInstanceGetter());
     }
 
     public function test_the_factory_will_resolve_the_getter_from_the_config_if_it_is_set()

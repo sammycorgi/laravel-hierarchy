@@ -39,11 +39,11 @@ class HasHierarchyModelTest extends TestCase
 
     public function test_an_exception_is_thrown_if_creating_multiple_root_nodes()
     {
-        TestHasHierarchy::factory()->create();
+        TestHasHierarchy::factory()->create(['parent_id' => null]);
 
         $this->expectException(HierarchyException::class);
 
-        TestHasHierarchy::factory()->create();
+        TestHasHierarchy::factory()->create(['parent_id' => null]);
     }
 
     public function test_newly_created_models_are_added_to_their_parents_hierarchy_child_id_keys()

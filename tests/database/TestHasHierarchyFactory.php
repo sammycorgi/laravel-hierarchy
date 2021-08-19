@@ -14,6 +14,8 @@ class TestHasHierarchyFactory extends Factory
      */
     public function definition()
     {
-        return [];
+        return [
+            'parent_id' => optional(TestHasHierarchy::first())->id
+        ];
     }
 }

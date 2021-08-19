@@ -59,7 +59,7 @@ class HierarchyServiceFactory
     private function makeInstanceGetter(string|GetsHierarchyInstances|Model|null $instanceGetterOrModelOrClass): GetsHierarchyInstances
     {
         if ($instanceGetterOrModelOrClass === null) {
-            return new EloquentHierarchyInstanceGetter(config('hierarchy.eloquent.default_model'));
+            return app()->make(config('hierarchy.instance_getters.' . config('hierarchy.instance_getters.default')));
         }
 
         if ($instanceGetterOrModelOrClass instanceof GetsHierarchyInstances) {
